@@ -3,135 +3,86 @@
 > **AI AGENT: READ THIS FIRST.** This README is the permanent handoff document. Inspect the repository and continue from the exact phase below. Never restart completed work.
 
 ```text
-CURRENT PHASE: PHASE 01 — FOUNDATION / API CORE
+CURRENT PHASE: PHASE 02 — PUBLIC WEBSITE UI/UX
 STATUS: IN PROGRESS
-LAST COMPLETED: Project structure, MySQL schema, seed data, auth foundation, Apache security, public services/portfolio APIs, user profile/notifications/projects APIs, message polling API
-NEXT TASK: Complete remaining API endpoints and admin API namespace, then begin authentication UI
-LAST COMMIT: 5d86185cd4f9538130f37ab480137539c476d9ed
+LAST COMPLETED: Foundation API core + admin API foundation + bright Apple-style design system + redesigned homepage/navigation
+NEXT TASK: Complete public pages (services, work, about, contact), then authentication UI
+LAST COMMIT: bf9f4a445867ca3cec0d57f4f83da154926baa93
 BLOCKERS: NONE
 DESIGN: BRIGHT APPLE-INSPIRED ONLY
 STACK: PHP 8.x + HTML5 + CSS3 + VANILLA JS + MYSQL 8.x + JSON + APACHE
 ```
 
 ## MANDATORY CONTINUATION RULES
-
 1. Read this README before coding.
-2. Read `CURRENT PHASE` first.
-3. Inspect existing files before editing.
-4. Continue from `NEXT TASK`.
-5. Never recreate completed work.
-6. Use only the locked technology stack.
-7. User-facing UI is Uzbek Latin.
-8. Design is bright Apple-inspired only. No dark mode, black/dark backgrounds, cyberpunk neon, Tailwind, Bootstrap or generic templates.
-9. After every logical milestone, update this status block and commit it with the implementation.
-10. A new chat must resume without asking what was previously done.
+2. Inspect the repository before editing.
+3. Continue from the exact NEXT TASK.
+4. Never recreate completed work.
+5. Use only PHP + HTML + CSS + Vanilla JS + MySQL + JSON + Apache.
+6. All user-facing UI is Uzbek Latin.
+7. Bright Apple-inspired only. No dark mode, dark backgrounds, cyberpunk neon, Bootstrap or Tailwind.
+8. Update this status after every logical milestone.
+9. Commit implementation and status updates.
+10. A new AI chat must resume from this file alone.
 
 ## DESIGN LOCK
+Bright, premium, minimal, spacious, responsive, Apple-inspired.
 
-Bright, white/ivory/soft-gray, premium, minimal, spacious, Apple-inspired. Use glass/blur carefully, subtle borders/shadows, smooth micro-interactions, responsive layout and accessible contrast.
+Background `#F8F8F6`; surface `#FFFFFF`; secondary `#F2F2EF`; text `#111111`; muted `#6E6E73`; accent `#0071E3`; success `#34C759`; warning `#FF9F0A`; danger `#FF3B30`.
 
-Colors:
-- Background `#F8F8F6`
-- Surface `#FFFFFF`
-- Secondary `#F2F2EF`
-- Text `#111111`
-- Secondary text `#6E6E73`
-- Accent `#0071E3`
-- Success `#34C759`
-- Warning `#FF9F0A`
-- Danger `#FF3B30`
+Use system/SF Pro-style fonts, subtle borders, soft shadows, large typography, rounded surfaces and restrained glass/blur.
 
-**No dark UI.**
+## COMPLETED FOUNDATION
+- PHP project structure
+- MySQL schema and seed data
+- PDO/security foundation
+- authentication API
+- user profile/notifications APIs
+- projects API
+- chat polling/send APIs
+- services/portfolio APIs
+- admin authorization
+- admin users/projects/settings/features/audit APIs
+- Apache protection
+- bright Apple-style CSS foundation
+- redesigned `index.php`
+- refined global navigation
 
-## TECHNOLOGY LOCK
+## CURRENT PUBLIC WEBSITE
+`index.php` now contains the new WebHub hero, value proposition, project CTA, portfolio CTA and Web/Systems/Ecosystem cards.
 
-Allowed only: PHP 8.x, HTML5, CSS3, Vanilla JavaScript, MySQL 8.x, JSON, Apache, `.htaccess`.
+`includes/navbar.php` now uses WebHub.uz branding and minimal navigation.
 
-Forbidden: React, Vue, Angular, Next.js, Node.js, TypeScript, Tailwind CSS, Bootstrap, jQuery, Laravel, Symfony, WordPress, npm, Redis, WebSocket server and external frontend/backend frameworks.
+## TARGET PUBLIC SITEMAP
+- Home
+- Work / Portfolio
+- Services
+- About
+- Contact
 
-## CURRENT IMPLEMENTATION
-
-### Database
-
-`database/schema.sql` contains users, roles, sessions, project_statuses, services, projects, portfolio, pages, banners, media, conversations, conversation_members, messages, message_attachments, notifications, feature_flags, settings and audit_logs.
-
-`database/seed.sql` contains default roles, project statuses, feature flags and public settings.
-
-### Security foundation
-
-- PDO architecture
-- password hashing
-- session authentication helpers
-- permission helpers
-- CSRF helpers
-- Apache directory protection
-- upload PHP execution blocking
-
-### API currently implemented
-
-- `/api/v1/auth/register.php`
-- `/api/v1/auth/login.php`
-- `/api/v1/auth/logout.php`
-- `/api/v1/auth/me.php`
-- `/api/v1/config.php`
-- `/api/v1/users/me.php`
-- `/api/v1/users/update.php`
-- `/api/v1/users/notifications.php`
-- `/api/v1/projects/index.php`
-- `/api/v1/messages/index.php`
-- `/api/v1/services/index.php`
-- `/api/v1/portfolio/index.php`
-
-Message polling verifies conversation membership and requests only messages newer than the supplied message ID.
-
-## TARGET STRUCTURE
-
-```text
-webhub/
-├── index.php login.php register.php logout.php
-├── work.php project.php services.php about.php contact.php
-├── dashboard.php projects.php messages.php profile.php
-├── api/v1/
-│   ├── bootstrap.php config.php
-│   ├── auth/ users/ projects/ messages/
-│   ├── services/ portfolio/ media/ notifications/ admin/
-├── admin/
-│   ├── index.php users.php projects.php messages.php
-│   ├── services.php portfolio.php media.php banners.php pages.php
-│   ├── features.php settings.php notifications.php audit.php
-│   └── admins.php roles.php
-├── config/ includes/ assets/ uploads/ database/ storage/
-└── .htaccess
-```
+Keep the sitemap intentionally small. Do not add unnecessary pages.
 
 ## DEVELOPMENT PHASES
-
 - PHASE 00 — Planning: **COMPLETE**
-- PHASE 01 — Foundation / API Core: **IN PROGRESS**
-- PHASE 02 — Authentication UI: **NOT STARTED**
-- PHASE 03 — Public Website UI/UX: **NOT STARTED**
+- PHASE 01 — Foundation / API Core: **COMPLETE**
+- PHASE 02 — Public Website UI/UX: **IN PROGRESS**
+- PHASE 03 — Authentication UI: **NOT STARTED**
 - PHASE 04 — User Dashboard: **NOT STARTED**
 - PHASE 05 — Project Management: **NOT STARTED**
 - PHASE 06 — Chat: **NOT STARTED**
 - PHASE 07 — Admin Panel: **NOT STARTED**
 - PHASE 08 — CMS / Media: **NOT STARTED**
-- PHASE 09 — Notifications / Feature Flags: **NOT STARTED**
+- PHASE 09 — Notifications / Feature Controls: **NOT STARTED**
 - PHASE 10 — Security Hardening: **NOT STARTED**
 - PHASE 11 — QA / Responsive / Production: **NOT STARTED**
 
 ## NEXT EXECUTION ORDER
+1. Build `services.php` with API-backed services.
+2. Build `work.php` with API-backed portfolio.
+3. Build `about.php`.
+4. Build `contact.php` with project inquiry form.
+5. Complete shared responsive components.
+6. Build login/register UI.
+7. Continue dashboard → projects → chat → admin CMS.
 
-1. Complete missing user/project/message APIs.
-2. Add admin API namespace with server-side permission checks.
-3. Complete shared config and error handling.
-4. Implement login/register UI with Vanilla JS.
-5. Implement bright Apple-style public website.
-6. Implement dashboard and project UI.
-7. Implement AJAX chat.
-8. Implement full admin CMS.
-9. Implement media/uploads.
-10. Implement notifications and feature controls.
-11. Security audit.
-12. Responsive QA and production cleanup.
-
-**NEXT AGENT: DO NOT ASK WHAT TO DO. READ THIS FILE, INSPECT THE REPOSITORY, AND CONTINUE FROM PHASE 01.**
+**NEXT AGENT: DO NOT ASK WHAT TO DO. START WITH `services.php` AND FOLLOW THE ORDER ABOVE.**
