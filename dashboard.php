@@ -1,7 +1,1 @@
-<?php
-declare(strict_types=1);
-require_once __DIR__ . '/../config/config.php';
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../includes/functions.php';
-require_once __DIR__ . '/../includes/auth.php';
-require_login();
+<?php declare(strict_types=1); require_once __DIR__.'/config/config.php'; require_once __DIR__.'/includes/auth.php'; $user=require_login(); $pageTitle='Kabinet — WebHub'; require_once __DIR__.'/includes/header.php'; ?><main class="container page"><p class="eyebrow">WEBHUB.UZ</p><h1>Xush kelibsiz, <?= e($user['name']) ?>.</h1><p>Bu sizning shaxsiy WebHub kabinetingiz.</p></main><?php require_once __DIR__.'/includes/footer.php'; ?>

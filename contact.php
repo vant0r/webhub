@@ -1,0 +1,1 @@
+<?php declare(strict_types=1); require_once __DIR__.'/config/config.php'; require_once __DIR__.'/includes/functions.php'; $pageTitle='Aloqa — WebHub'; require_once __DIR__.'/includes/header.php'; ?><main class="container page"><p class="eyebrow">ALOQA</p><h1>Loyihangiz haqida gaplashamiz.</h1></main><?php require_once __DIR__.'/includes/footer.php'; ?>
