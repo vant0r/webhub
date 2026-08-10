@@ -3,15 +3,14 @@
 > **AI AGENT: READ THIS FIRST.** This README is the permanent handoff document. Inspect the repository and continue from the exact phase below. Never restart completed work.
 
 ```text
-CURRENT PHASE: PHASE 02 — PUBLIC WEBSITE UI/UX
-STATUS: COMPLETE
-LAST COMPLETED: Public services, portfolio, about and contact pages + shared responsive public components
-NEXT TASK: Build login/register UI using the existing authentication APIs
-LAST COMMIT: e73c04c04b90200f10ce4c0325356b19945635d9
+CURRENT PHASE: PHASE 03 — AUTHENTICATION UI
+STATUS: IN PROGRESS
+LAST COMPLETED: Public website UI/UX + login/register UI + CSRF hardening + session-aware navigation
+NEXT TASK: Complete authentication flow audit, then build user dashboard
+LAST COMMIT: bf2eb2baa5d273a9987d6ba2823f23b9f6a55459
 BLOCKERS: NONE
 DESIGN: BRIGHT APPLE-INSPIRED ONLY
 STACK: PHP 8.x + HTML5 + CSS3 + VANILLA JS + MYSQL 8.x + JSON + APACHE
-BRANCH: architecture-foundation
 ```
 
 ## MANDATORY CONTINUATION RULES
@@ -50,28 +49,30 @@ Use system/SF Pro-style fonts, subtle borders, soft shadows, large typography, r
 - refined global navigation
 
 ## COMPLETED PUBLIC WEBSITE
-- `index.php` — redesigned hero, value proposition, project CTA, portfolio CTA and Web/Tizimlar/Ekotizim cards.
-- `services.php` — real API-backed services; empty/error states; technology tags.
-- `work.php` — real API-backed published portfolio; cover images, metadata and technology tags.
-- `about.php` — reads the published `pages` row with slug `about`; no fake CMS data is inserted.
-- `contact.php` — real project inquiry form using the existing authenticated project API. Unauthenticated visitors are directed to login/register rather than creating fake inquiries.
-- `assets/css/main.css` — shared responsive page-intro, service, portfolio, about, loading and empty-state components.
-- `includes/navbar.php` — existing minimal WebHub.uz navigation retained; no duplicate navigation system created.
+- `services.php` — API-backed services
+- `work.php` — API-backed portfolio
+- `about.php` — CMS-backed about content
+- `contact.php` — project inquiry flow
+- responsive shared public components
 
-## AUDIT NOTES — PHASE 02
-- Existing services and portfolio APIs were reused; no duplicate backend endpoints were created.
-- Existing MySQL schema and seed data were not rewritten.
-- Public pages do not invent clients, projects, statistics or reviews. Empty database states are shown explicitly.
-- Public content is escaped before HTML output.
-- The contact form does not bypass project authorization; project creation remains protected by the existing authentication layer.
-- No React, Node.js, Tailwind, Bootstrap, Laravel, jQuery or other framework was introduced.
+## COMPLETED AUTHENTICATION UI
+- `login.php` — premium responsive login UI
+- `register.php` — premium responsive registration UI with client-side password confirmation
+- Existing authentication APIs audited
+- Login and registration APIs now enforce CSRF tokens
+- Password hashing remains Argon2id when available, otherwise PHP default
+- Session login/logout foundation retained
+- Global navigation now switches between `Kirish` and `Kabinet` based on session
 
-## TARGET PUBLIC SITEMAP
+## TARGET PUBLIC/APP SITEMAP
 - Home
 - Work / Portfolio
 - Services
 - About
 - Contact
+- Login
+- Register
+- User Dashboard
 
 Keep the sitemap intentionally small. Do not add unnecessary pages.
 
@@ -79,7 +80,7 @@ Keep the sitemap intentionally small. Do not add unnecessary pages.
 - PHASE 00 — Planning: **COMPLETE**
 - PHASE 01 — Foundation / API Core: **COMPLETE**
 - PHASE 02 — Public Website UI/UX: **COMPLETE**
-- PHASE 03 — Authentication UI: **IN PROGRESS — NEXT**
+- PHASE 03 — Authentication UI: **IN PROGRESS**
 - PHASE 04 — User Dashboard: **NOT STARTED**
 - PHASE 05 — Project Management: **NOT STARTED**
 - PHASE 06 — Chat: **NOT STARTED**
@@ -90,11 +91,10 @@ Keep the sitemap intentionally small. Do not add unnecessary pages.
 - PHASE 11 — QA / Responsive / Production: **NOT STARTED**
 
 ## NEXT EXECUTION ORDER
-1. Build `login.php` using `/api/v1/auth/login.php`.
-2. Build `register.php` using `/api/v1/auth/register.php`.
-3. Build logout flow using the existing `/api/v1/auth/logout.php`.
-4. Audit authentication UI against existing session/CSRF/security behavior; do not rewrite the working auth API without a concrete defect.
-5. Update this README at the authentication milestone.
-6. Continue `dashboard.php` → `projects.php` → `messages.php` → admin/CMS phases.
+1. Audit login/register/logout end-to-end against existing session/auth helpers.
+2. Build `/user/` dashboard using real authentication/profile/project/notification APIs.
+3. Build project management UI.
+4. Build chat UI.
+5. Continue admin panel → CMS/media → notifications → security hardening → QA.
 
-**NEXT AGENT: DO NOT ASK WHAT TO DO. START WITH `login.php` AND FOLLOW THE ORDER ABOVE.**
+**NEXT AGENT: DO NOT ASK WHAT TO DO. START WITH THE AUTHENTICATION END-TO-END AUDIT, THEN `/user/`.**
