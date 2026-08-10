@@ -1,0 +1,20 @@
+Options -Indexes
+
+RewriteEngine On
+
+# Block sensitive files/directories
+<FilesMatch "^(\.env|composer\.(json|lock)|README\.md|schema\.sql|seed\.sql)$">
+    Require all denied
+</FilesMatch>
+
+RewriteRule ^(?:config|includes|database|storage)(?:/|$) - [F,L]
+
+# Prevent PHP execution inside uploads
+RewriteRule ^uploads/.*\.php$ - [F,L,NC]
+
+# Preserve real files/directories
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+DirectoryIndex index.php

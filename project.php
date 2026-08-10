@@ -1,0 +1,1 @@
+<?php declare(strict_types=1); require_once __DIR__.'/config/config.php'; require_once __DIR__.'/includes/functions.php'; $pageTitle='Loyiha — WebHub'; require_once __DIR__.'/includes/header.php'; ?><main class="container page"><p class="eyebrow">LOYIHA</p><h1>Loyiha tafsilotlari</h1></main><?php require_once __DIR__.'/includes/footer.php'; ?>
