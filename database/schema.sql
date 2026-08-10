@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS roles (
  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
  name VARCHAR(50) NOT NULL UNIQUE,
  permissions JSON NOT NULL,
- created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS users (
@@ -18,30 +19,51 @@ CREATE TABLE IF NOT EXISTS users (
  password_hash VARCHAR(255) NOT NULL,
  avatar_url VARCHAR(500) NULL,
  role_id INT UNSIGNED NOT NULL,
- status ENUM('active','blocked','pending') NOT NULL DEFAULT 'active',
+ status ENUM('active','blocked','pending','deleted') NOT NULL DEFAULT 'active',
+ email_verified_at DATETIME NULL,
+ phone_verified_at DATETIME NULL,
  last_login_at DATETIME NULL,
  last_seen_at DATETIME NULL,
  metadata JSON NULL,
  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
  FOREIGN KEY (role_id) REFERENCES roles(id),
- INDEX idx_users_role_status (role_id,status)
+ INDEX idx_users_role_status (role_id,status),
+ INDEX idx_users_last_seen (last_seen_at)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS sessions (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ user_id BIGINT UNSIGNED NOT NULL,
+ session_token_hash CHAR(64) NOT NULL UNIQUE,
+ device VARCHAR(255) NULL,
+ ip_address VARCHAR(45) NULL,
+ user_agent TEXT NULL,
+ expires_at DATETIME NOT NULL,
+ revoked_at DATETIME NULL,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+ INDEX idx_sessions_user (user_id),
+ INDEX idx_sessions_expiry (expires_at)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS project_statuses (
  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
  name VARCHAR(80) NOT NULL,
+ slug VARCHAR(80) NOT NULL UNIQUE,
  color VARCHAR(20) NOT NULL DEFAULT '#155EEF',
  sort_order INT NOT NULL DEFAULT 0,
  is_system TINYINT(1) NOT NULL DEFAULT 0,
- is_active TINYINT(1) NOT NULL DEFAULT 1
+ is_active TINYINT(1) NOT NULL DEFAULT 1,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS services (
  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
- title VARCHAR(160) NOT NULL,
+ title VARCHAR(180) NOT NULL,
  slug VARCHAR(180) NOT NULL UNIQUE,
- short_description TEXT NULL,
+ short_description VARCHAR(500) NULL,
  description TEXT NULL,
  icon VARCHAR(100) NULL,
  image_url VARCHAR(500) NULL,
@@ -50,7 +72,8 @@ CREATE TABLE IF NOT EXISTS services (
  is_active TINYINT(1) NOT NULL DEFAULT 1,
  is_featured TINYINT(1) NOT NULL DEFAULT 0,
  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
- updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+ updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ INDEX idx_services_active_order (is_active,sort_order)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS projects (
@@ -61,10 +84,11 @@ CREATE TABLE IF NOT EXISTS projects (
  description TEXT NULL,
  service_id BIGINT UNSIGNED NULL,
  status_id INT UNSIGNED NOT NULL,
- budget DECIMAL(14,2) NULL,
+ budget DECIMAL(15,2) NULL,
  currency CHAR(3) NOT NULL DEFAULT 'UZS',
  priority ENUM('low','normal','high','urgent') NOT NULL DEFAULT 'normal',
  metadata JSON NULL,
+ started_at DATETIME NULL,
  deadline_at DATETIME NULL,
  completed_at DATETIME NULL,
  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -72,15 +96,90 @@ CREATE TABLE IF NOT EXISTS projects (
  FOREIGN KEY (user_id) REFERENCES users(id),
  FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE SET NULL,
  FOREIGN KEY (status_id) REFERENCES project_statuses(id),
- INDEX idx_projects_user_status (user_id,status_id)
+ INDEX idx_projects_user_status (user_id,status_id),
+ INDEX idx_projects_deadline (deadline_at)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS portfolio (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ title VARCHAR(200) NOT NULL,
+ slug VARCHAR(200) NOT NULL UNIQUE,
+ short_description VARCHAR(500) NULL,
+ description TEXT NULL,
+ cover_image VARCHAR(500) NULL,
+ category VARCHAR(100) NULL,
+ technologies JSON NULL,
+ client_name VARCHAR(200) NULL,
+ project_url VARCHAR(500) NULL,
+ year SMALLINT UNSIGNED NULL,
+ case_study JSON NULL,
+ status ENUM('draft','published','archived') NOT NULL DEFAULT 'draft',
+ is_featured TINYINT(1) NOT NULL DEFAULT 0,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ INDEX idx_portfolio_status_featured (status,is_featured)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS pages (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ slug VARCHAR(150) NOT NULL UNIQUE,
+ title VARCHAR(200) NOT NULL,
+ content JSON NOT NULL,
+ seo JSON NULL,
+ is_published TINYINT(1) NOT NULL DEFAULT 1,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS banners (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ title VARCHAR(200) NOT NULL,
+ subtitle VARCHAR(500) NULL,
+ image_url VARCHAR(500) NULL,
+ mobile_image_url VARCHAR(500) NULL,
+ button_text VARCHAR(100) NULL,
+ button_url VARCHAR(500) NULL,
+ sort_order INT NOT NULL DEFAULT 0,
+ starts_at DATETIME NULL,
+ ends_at DATETIME NULL,
+ is_active TINYINT(1) NOT NULL DEFAULT 1,
+ metadata JSON NULL,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ INDEX idx_banners_active_order (is_active,sort_order)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS media (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ uuid CHAR(36) NOT NULL UNIQUE,
+ user_id BIGINT UNSIGNED NULL,
+ original_name VARCHAR(255) NOT NULL,
+ stored_name VARCHAR(255) NOT NULL UNIQUE,
+ path VARCHAR(500) NOT NULL,
+ mime_type VARCHAR(150) NOT NULL,
+ extension VARCHAR(20) NOT NULL,
+ size_bytes BIGINT UNSIGNED NOT NULL,
+ category ENUM('image','document','audio','video','other') NOT NULL DEFAULT 'other',
+ metadata JSON NULL,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+ INDEX idx_media_category (category),
+ INDEX idx_media_created (created_at)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS conversations (
  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ uuid CHAR(36) NOT NULL UNIQUE,
  type ENUM('support','project','general') NOT NULL DEFAULT 'general',
  project_id BIGINT UNSIGNED NULL,
+ title VARCHAR(200) NULL,
+ last_message_id BIGINT UNSIGNED NULL,
+ metadata JSON NULL,
  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
- FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
+ updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
+ INDEX idx_conversations_project (project_id),
+ INDEX idx_conversations_updated (updated_at)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS conversation_members (
@@ -108,47 +207,61 @@ CREATE TABLE IF NOT EXISTS messages (
  FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE,
  FOREIGN KEY (sender_id) REFERENCES users(id),
  FOREIGN KEY (reply_to_id) REFERENCES messages(id) ON DELETE SET NULL,
- INDEX idx_messages_conversation_id (conversation_id,id)
+ INDEX idx_messages_conversation_id (conversation_id,id),
+ INDEX idx_messages_sender (sender_id)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS message_attachments (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ message_id BIGINT UNSIGNED NOT NULL,
+ media_id BIGINT UNSIGNED NOT NULL,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ FOREIGN KEY (message_id) REFERENCES messages(id) ON DELETE CASCADE,
+ FOREIGN KEY (media_id) REFERENCES media(id) ON DELETE CASCADE,
+ UNIQUE KEY uq_message_media (message_id,media_id)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS notifications (
  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
  user_id BIGINT UNSIGNED NOT NULL,
- type VARCHAR(60) NOT NULL,
+ type VARCHAR(80) NOT NULL,
  title VARCHAR(200) NOT NULL,
  body TEXT NULL,
- data JSON NULL,
+ payload JSON NULL,
  read_at DATETIME NULL,
  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
- INDEX idx_notifications_user_read (user_id,read_at)
+ INDEX idx_notifications_user_read (user_id,read_at,created_at)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS feature_flags (
  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
- name VARCHAR(100) NOT NULL UNIQUE,
- enabled TINYINT(1) NOT NULL DEFAULT 0,
+ `key` VARCHAR(100) NOT NULL UNIQUE,
+ value TINYINT(1) NOT NULL DEFAULT 0,
  metadata JSON NULL,
  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS settings (
  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
- setting_key VARCHAR(120) NOT NULL UNIQUE,
- setting_value JSON NOT NULL,
+ `key` VARCHAR(150) NOT NULL UNIQUE,
+ value JSON NOT NULL,
+ is_public TINYINT(1) NOT NULL DEFAULT 0,
  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS audit_logs (
  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
- user_id BIGINT UNSIGNED NULL,
+ actor_id BIGINT UNSIGNED NULL,
  action VARCHAR(120) NOT NULL,
- resource VARCHAR(120) NULL,
- resource_id VARCHAR(120) NULL,
+ resource VARCHAR(100) NOT NULL,
+ resource_id VARCHAR(100) NULL,
  old_data JSON NULL,
  new_data JSON NULL,
  ip_address VARCHAR(45) NULL,
+ user_agent TEXT NULL,
  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
- FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
- INDEX idx_audit_created (created_at)
+ FOREIGN KEY (actor_id) REFERENCES users(id) ON DELETE SET NULL,
+ INDEX idx_audit_actor (actor_id,created_at),
+ INDEX idx_audit_resource (resource,resource_id)
 ) ENGINE=InnoDB;
