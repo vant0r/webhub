@@ -2,15 +2,11 @@
 
 # CURRENT DEVELOPMENT STATUS
 
-**Bosqich:** 0 — Arxitektura va foundation
+**Bosqich:** 0 — Toza arxitektura / rebuild boshlanishi
 
 **Branch:** `feature/json-api-foundation`
 
-**PR:** #2 — `feat: WebHub JSON PHP foundation`
-
-## Muhim arxitektura qarori
-
-Loyiha **MySQL/SQL ishlatmaydi**. Barcha persistent ma’lumotlar real JSON fayllarda saqlanadi. Web sayt va APK ma’lumotlarni PHP API orqali oladi.
+**PR:** #2
 
 ## Qat’iy texnologik qoidalar
 
@@ -21,525 +17,602 @@ Loyiha **MySQL/SQL ishlatmaydi**. Barcha persistent ma’lumotlar real JSON fayl
 - JSON
 - Apache
 - `.htaccess`
+- MySQL/SQL yo‘q.
 - React, Vue, Angular, Node.js, TypeScript, Tailwind, Bootstrap, Laravel, Symfony, WordPress, jQuery va boshqa frameworklar yo‘q.
 - Dark mode, qora/dark background, cyberpunk/neon yo‘q.
 - User-facing barcha matnlar o‘zbek lotin tilida.
 - Mock/fake data yo‘q.
 - Real JSON persistence va real PHP API ishlatiladi.
-- Keraksiz sahifalar yaratilmaydi.
+- Keraksiz qo‘shimcha sahifalar yaratilmaydi.
 
-## Hozirgacha bajarilgan
+## MUHIM
 
-- Repository audit qilindi.
-- PHP foundation yaratildi.
-- JSON storage foundation yaratildi.
-- JSON read/write helperlari yaratildi.
-- JSON API response helperlari yaratildi.
-- Session cookie security foundation qo‘yildi.
-- Responsive premium Light Mode homepage foundation yaratildi.
-- User dashboard foundation yaratildi.
-- `/api/v1/` yo‘nalishi boshlandi.
-- API config endpoint foundation yaratildi.
-- API services endpoint foundation yaratildi.
+Oldingi implementation kodlari to‘liq tozalanadi/rebuild qilinadi.
 
-## Muhim eslatma
-
-Foundation hali production-ready emas. Authentication, authorization, buyurtma, chat, admin, JSON concurrency, rate limiting, audit va barcha security tekshiruvlari hali to‘liq yakunlanmagan.
+Quyidagi struktura **o‘zgarmas asosiy loyiha strukturasi** hisoblanadi. Yangi papka yoki sahifa faqat real zarurat bo‘lsa va README'dagi arxitekturaga mos ravishda qo‘shiladi.
 
 ---
 
-# LOYIHA MAQSADI
-
-WebHub — raqamli mahsulot studiyasi platformasi.
-
-Foydalanuvchi:
-
-1. Web sayt yoki APK orqali kiradi.
-2. Ro‘yxatdan o‘tadi yoki login qiladi.
-3. Xizmatni tanlaydi.
-4. Buyurtma beradi.
-5. Buyurtma bo‘yicha alohida chatga ega bo‘ladi.
-6. Buyurtma statusini kuzatadi.
-7. Admin bilan chat orqali ishlaydi.
-8. Bildirishnomalarni oladi.
-
-Admin:
-
-1. Foydalanuvchilarni boshqaradi.
-2. Buyurtmalarni boshqaradi.
-3. Buyurtma statuslarini o‘zgartiradi.
-4. Chat orqali foydalanuvchi bilan ishlaydi.
-5. Xizmatlar va portfolio ma’lumotlarini boshqaradi.
-6. Bildirishnomalarni boshqaradi.
-7. Audit tarixini ko‘radi.
-
----
-
-# TAVSIYA ETILGAN STRUKTURA
+# LOYIHA STRUKTURASI
 
 ```text
-/webhub/
+webhub/
 │
 ├── index.php
-├── work.php
-├── project.php
-├── services.php
 ├── about.php
+├── services.php
+├── portfolio.php
 ├── contact.php
 ├── login.php
 ├── register.php
 ├── logout.php
 │
-├── dashboard.php
-├── projects.php
-├── messages.php
-├── profile.php
-│
-├── api/
-│   └── v1/
-│       ├── auth/
-│       ├── users/
-│       ├── projects/
-│       ├── messages/
-│       ├── services/
-│       ├── portfolio/
-│       ├── notifications/
-│       └── config/
-│
-├── admin/
-│   ├── index.php
-│   ├── users.php
-│   ├── projects.php
-│   ├── messages.php
-│   ├── services.php
-│   ├── portfolio.php
-│   ├── settings.php
-│   ├── notifications.php
-│   ├── audit.php
-│   ├── admins.php
-│   └── roles.php
-│
 ├── config.php
 ├── functions.php
 ├── auth.php
 │
+├── api/
+│   ├── index.php
+│   │
+│   ├── auth.php
+│   ├── profile.php
+│   │
+│   ├── orders.php
+│   ├── order.php
+│   ├── order-create.php
+│   ├── order-update.php
+│   │
+│   ├── chat.php
+│   ├── message.php
+│   ├── message-send.php
+│   │
+│   ├── projects.php
+│   ├── services.php
+│   └── notifications.php
+│
 ├── data/
 │   ├── users.json
 │   ├── orders.json
-│   ├── conversations.json
 │   ├── messages.json
 │   ├── projects.json
 │   ├── services.json
-│   ├── portfolio.json
 │   ├── notifications.json
-│   ├── sessions.json
-│   ├── settings.json
-│   └── audit.json
+│   └── settings.json
 │
-├── storage/
-│   └── logs/
+├── admin.php
+├── admin-login.php
+├── admin-dashboard.php
+├── admin-orders.php
+├── admin-chat.php
+├── admin-projects.php
+├── admin-services.php
+├── admin-users.php
+├── admin-settings.php
 │
 ├── install.php
 └── .htaccess
 ```
 
-Kerak bo‘lmagan modul yoki sahifa faqat kelajakda real talab paydo bo‘lsa qo‘shiladi.
+## Strukturani o‘zgartirmaslik qoidasi
+
+- `webhub/` root strukturasi shu ko‘rinishda qoladi.
+- `api/` APK va boshqa clientlar uchun PHP API qatlamidir.
+- `data/` faqat JSON persistence uchun ishlatiladi.
+- `admin*.php` admin boshqaruv qismidir.
+- `config.php`, `functions.php`, `auth.php` umumiy backend foundation hisoblanadi.
+- CSS va Vanilla JS alohida framework/build tizimiga chiqarilmaydi; kerakli sahifa ichida ishlatiladi.
+- SQL database, migration, ORM yoki database server qo‘shilmaydi.
 
 ---
 
-# PHASE 1 — JSON AUTHENTICATION
+# SAHIFALAR VAZIFASI
 
-**Hozirgi asosiy ish shu.**
+## Public
 
-## 1. Register
+### `index.php`
 
-- `register.php`
-- `POST /api/v1/auth/register.php`
-- ism
-- telefon yoki email
-- password
-- duplicate account tekshiruvi
-- input validation
-- `password_hash()`
-- unique ID/UUID
-- `created_at`
-- `updated_at`
-- JSON'ga real yozish
+Asosiy landing/home sahifa.
 
-## 2. Login
+### `about.php`
 
-- `login.php`
-- `POST /api/v1/auth/login.php`
-- credential validation
-- `password_verify()`
-- secure session
-- session regeneration
-- `last_login_at`
-- xavfsiz error response
+WebHub haqida.
 
-## 3. Logout
+### `services.php`
 
-- `POST /api/v1/auth/logout.php`
-- session revoke/destroy
-- cookie tozalash
+Mavjud xizmatlar.
 
-## 4. Current user
+### `portfolio.php`
 
-- `GET /api/v1/auth/me.php`
-- login qilinmagan user → `401`
-- login qilgan user → public profile
-- password hash/token/session secret hech qachon response'da bo‘lmaydi
+Bajarilgan loyihalar va portfolio.
 
-## 5. Profile
+### `contact.php`
 
-- `GET /api/v1/users/me.php`
-- `PATCH /api/v1/users/update.php`
-- faqat o‘z profilini o‘zgartirish
-- name/phone/email validation
+WebHub bilan bog‘lanish.
 
-## 6. Auth security
+### `login.php`
 
-- session fixation himoyasi
-- CSRF browser formalarida
-- request validation
-- output escaping
-- secure session cookie
-- JSON write uchun `LOCK_EX`
-- data/storage HTTP access bloklanishi
-- brute-force/rate limit foundation
+Foydalanuvchi login sahifasi.
 
-### PHASE 1 yakun mezoni
+### `register.php`
 
-`register → login → session → me → profile → logout` real JSON storage bilan ishlashi va security testlardan o‘tishi kerak.
+Yangi foydalanuvchi ro‘yxatdan o‘tishi.
+
+### `logout.php`
+
+Sessiyani xavfsiz yakunlash.
 
 ---
 
-# PHASE 2 — BUYURTMA TIZIMI
+# UMUMIY BACKEND
 
-Auth tugamaguncha boshlanmaydi.
+### `config.php`
 
-## Buyurtma
+- loyiha konfiguratsiyasi
+- JSON storage yo‘llari
+- session konfiguratsiyasi
+- umumiy xavfsizlik sozlamalari
 
-- xizmat tanlash
-- nom/title
-- batafsil tavsif
-- budjet
-- deadline
-- validation
-- unique ID/UUID
+### `functions.php`
+
+- JSON read/write
+- validation helperlar
+- response helperlar
+- ID/UUID generator
+- umumiy utility funksiyalar
+
+### `auth.php`
+
+- authentication
+- authorization
+- session tekshiruvi
+- user ownership tekshiruvi
+- admin authorization foundation
+
+---
+
+# API
+
+`api/` alohida API framework emas. Oddiy PHP endpointlar to‘plami.
+
+## `api/index.php`
+
+API kirish/ma’lumot endpointi.
+
+## `api/auth.php`
+
+- register
+- login
+- logout
+- current user
+- authentication flow
+
+## `api/profile.php`
+
+- profilni olish
+- profilni yangilash
+
+## `api/orders.php`
+
+- buyurtmalar ro‘yxati
+- userga tegishli buyurtmalar
+
+## `api/order.php`
+
+- bitta buyurtma
+- buyurtma tafsilotlari
+
+## `api/order-create.php`
+
+- yangi buyurtma yaratish
+
+## `api/order-update.php`
+
+- buyurtma ma’lumotlari/statusini ruxsat asosida yangilash
+
+## `api/chat.php`
+
+- chat/conversation ma’lumotlari
+- chatni olish
+
+## `api/message.php`
+
+- bitta xabar
+- xabar tafsilotlari
+
+## `api/message-send.php`
+
+- yangi xabar yuborish
+
+## `api/projects.php`
+
+- loyiha ma’lumotlari
+- project/order bilan bog‘liq umumiy ma’lumotlar
+
+## `api/services.php`
+
+- xizmatlar ro‘yxati
+
+## `api/notifications.php`
+
+- foydalanuvchi notificationlari
+- o‘qilgan/o‘qilmagan holati
+
+---
+
+# JSON DATA
+
+## `data/users.json`
+
+Foydalanuvchilar.
+
+Saqlanadi:
+
+- id
+- name
+- phone/email
+- password hash
+- status
 - created_at
 - updated_at
+- last_login_at
+
+Password hech qachon API response'da qaytarilmaydi.
+
+## `data/orders.json`
+
+Buyurtmalar.
+
+Saqlanadi:
+
+- id
+- user_id
+- service_id
+- title
+- description
+- budget
+- deadline
 - status
+- created_at
+- updated_at
 
-## Statuslar
+## `data/messages.json`
 
-1. Yangi
-2. Muhokama
-3. Rejalashtirish
-4. Dizayn
-5. Dasturlash
-6. Test
-7. Mijoz ko‘rib chiqishi
-8. Tuzatish
-9. Yakunlandi
-10. Bekor qilindi
+Chat xabarlari.
 
-## Buyurtma yaratilganda
-
-1. validation
-2. JSON'ga yozish
-3. boshlang‘ich status
-4. project conversation yaratish
-5. userni conversation'ga biriktirish
-6. admin notification yaratish
-7. JSON success response
-
----
-
-# PHASE 3 — CHAT
-
-Web va APK bir xil PHP API chat tizimidan foydalanadi.
-
-**WebSocket server ishlatilmaydi.**
-
-Vanilla JS `fetch()` + AJAX polling ishlatiladi.
-
-## API
-
-- `GET /api/v1/messages/list.php`
-- `POST /api/v1/messages/send.php`
-- `POST /api/v1/messages/read.php`
-- `POST /api/v1/messages/delete.php`
-
-## Funksiyalar
-
-- text
-- reply
-- edit
-- delete
+- id
+- order_id
+- sender_id
+- message
+- reply_to
 - read status
-- unread count
-- typing indicator
-- online/last seen
-- system message
+- created_at
+- updated_at
 
-Yangi xabarlarni olishda `after_id` ishlatiladi; butun tarix har pollingda qayta olinmaydi.
+## `data/projects.json`
 
----
+WebHub loyihalari/portfolio bilan bog‘liq project ma’lumotlari.
 
-# PHASE 4 — APK API
+## `data/services.json`
 
-APK frontend emas, PHP backend API bilan ishlaydi.
+WebHub xizmatlari.
 
-Barcha API response'lar JSON:
+## `data/notifications.json`
 
-```text
-success
- data
- message
-```
+Foydalanuvchi va tizim notificationlari.
 
-yoki:
+## `data/settings.json`
 
-```text
-success
- error
-```
-
-## Asosiy endpointlar
-
-```text
-/api/v1/config.php
-
-/api/v1/auth/register.php
-/api/v1/auth/login.php
-/api/v1/auth/logout.php
-/api/v1/auth/me.php
-
-/api/v1/users/me.php
-/api/v1/users/update.php
-
-/api/v1/projects/list.php
-/api/v1/projects/create.php
-/api/v1/projects/get.php
-/api/v1/projects/update.php
-/api/v1/projects/status.php
-
-/api/v1/messages/list.php
-/api/v1/messages/send.php
-/api/v1/messages/read.php
-/api/v1/messages/delete.php
-
-/api/v1/services/list.php
-/api/v1/portfolio/list.php
-```
-
-API authorization orqali user boshqa userning project/chat ma’lumotini ko‘ra olmaydi.
+Sayt va tizim sozlamalari.
 
 ---
 
-# PHASE 5 — ADMIN
+# ADMIN
 
-Faqat real kerak bo‘lgan admin sahifalar:
+### `admin.php`
 
-```text
-/admin/index.php
-/admin/users.php
-/admin/projects.php
-/admin/messages.php
-/admin/services.php
-/admin/portfolio.php
-/admin/settings.php
-/admin/notifications.php
-/admin/audit.php
-/admin/admins.php
-/admin/roles.php
-```
+Admin panelga kirish/router asosiy nuqtasi.
 
-## Admin imkoniyatlari
+### `admin-login.php`
 
-- users
-- projects/orders
-- status
-- chat
-- services
-- portfolio
-- notifications
-- settings
-- audit
-- admins
-- roles/permissions
+Admin authentication.
 
-Statistika faqat real JSON ma’lumotlardan hisoblanadi.
+### `admin-dashboard.php`
 
----
+Real JSON ma’lumotlar asosidagi dashboard.
 
-# PHASE 6 — JSON STORAGE
+### `admin-orders.php`
 
-## Qoidalar
+Buyurtmalarni boshqarish.
 
-- har bir JSON fayl bitta domen ma’lumotini saqlaydi
-- `LOCK_EX` bilan yoziladi
-- malformed JSON xavfsiz boshqariladi
-- user input sanitize/validate qilinadi
-- ID collision oldi olinadi
-- parallel requestlarda corruption kamaytiriladi
-- data/storage public access yopiladi
-- password hash API response'da chiqmaydi
-- secret/tokenlar public response'da chiqmaydi
+### `admin-chat.php`
+
+Foydalanuvchilar bilan buyurtma chatlari.
+
+### `admin-projects.php`
+
+Loyihalarni boshqarish.
+
+### `admin-services.php`
+
+Xizmatlarni boshqarish.
+
+### `admin-users.php`
+
+Foydalanuvchilarni boshqarish.
+
+### `admin-settings.php`
+
+Tizim sozlamalari.
 
 ---
 
-# PHASE 7 — SECURITY
+# `install.php`
 
-Har bir phase davomida bajariladi.
+Birinchi o‘rnatish uchun.
 
-- password hashing
-- secure session
-- authorization
-- ownership check
-- input validation
-- output escaping
-- CSRF
-- rate limiting
-- brute-force himoyasi
-- secure headers
-- `.htaccess` himoyasi
-- path traversal himoyasi
-- IDOR himoyasi
-- audit log
-- upload bo‘lsa MIME/extension/size validation
-- PHP executable uploadni bloklash
+Vazifalari:
+
+- kerakli JSON fayllarni yaratish
+- boshlang‘ich JSON strukturasini tayyorlash
+- kerakli kataloglarni yaratish
+- permissionlarni tekshirish
+- o‘rnatish holatini tekshirish
+
+SQL/database installation bo‘lmaydi.
 
 ---
 
-# PHASE 8 — UI/UX
+# `.htaccess`
 
-Faqat Light Mode.
+- JSON fayllarga to‘g‘ridan-to‘g‘ri HTTP accessni bloklash
+- `data/` himoyasi
+- xavfsizlik headerlari
+- PHP fayllarining noto‘g‘ri ishlatilishini cheklash
+- kerakli Apache routing/security qoidalari
 
-## Dizayn
+---
 
-- Apple-inspired
-- premium
+# UI/UX
+
+Faqat **premium Light Mode**.
+
 - oq
-- och kulrang
+- yorqin kulrang
+- Apple-inspired
 - glass
 - blur
 - minimal
 - katta typography
 - whitespace
+- yumshoq micro-animation
 
 ## Invisible UI
 
-Default:
+Default holatda:
 
-- border ko‘rinmasin
-- button frame ko‘rinmasin
-- card frame ko‘rinmasin
+- border deyarli ko‘rinmaydi
+- tugma ramkasi bilinmaydi
+- card ramkasi bilinmaydi
 - shadow minimal
 
-Hover:
+Cursor hover bo‘lganda:
 
-- glass background
+- glass effect
 - blur
 - nozik border
 - soft shadow
-- micro animation
+- micro interaction
 
-Mobile/touch qurilmalarda hover o‘rniga `:active` va touch-friendly interaction ishlatiladi.
-
-## Responsive
-
-- desktop
-- laptop
-- tablet
-- mobile
-
-Navbar, hero, services, portfolio, dashboard, chat va admin panel barcha ekranlarda ishlashi shart.
+Mobile/touch qurilmalarda hover mavjud emasligi hisobga olinadi.
 
 ---
 
-# PHASE 9 — TESTING
+# ASOSIY FUNKSIYALAR
 
-Har milestone oxirida:
+## User
 
-## Functional
+1. Ro‘yxatdan o‘tish.
+2. Login.
+3. Profil.
+4. Xizmatlarni ko‘rish.
+5. Buyurtma berish.
+6. Buyurtmalarini ko‘rish.
+7. Buyurtma statusini kuzatish.
+8. Buyurtma chatidan foydalanish.
+9. Notificationlarni ko‘rish.
+10. Logout.
 
-- register
-- login
-- logout
-- profile
-- order create
-- order list
-- ownership
-- chat send/list/read
-- notifications
-- admin authorization
+## Admin
 
-## Security
+1. Login.
+2. Userlarni boshqarish.
+3. Buyurtmalarni ko‘rish.
+4. Buyurtma statusini boshqarish.
+5. Chatga javob berish.
+6. Loyihalarni boshqarish.
+7. Xizmatlarni boshqarish.
+8. Settingsni boshqarish.
 
-- unauthorized API
-- boshqa user project access
-- boshqa user conversation access
-- invalid input
-- malformed JSON
+---
+
+# BUYURTMA → CHAT OQIMI
+
+```text
+User
+ ↓
+Xizmat tanlaydi
+ ↓
+Buyurtma beradi
+ ↓
+orders.json
+ ↓
+Buyurtma yaratiladi
+ ↓
+Admin notification
+ ↓
+Buyurtmaga bog‘langan chat
+ ↓
+User ↔ Admin
+ ↓
+Status yangilanadi
+ ↓
+Buyurtma yakunlanadi
+```
+
+---
+
+# APK
+
+APK ushbu PHP API orqali ishlaydi.
+
+```text
+APK
+ ↓
+PHP API
+ ↓
+JSON
+```
+
+APK uchun alohida database yoki alohida backend yaratilmaydi.
+
+API real JSON ma’lumotlari bilan ishlaydi.
+
+---
+
+# SECURITY TALABLARI
+
+- `password_hash()`
+- `password_verify()`
+- secure session
+- session regeneration
+- authorization
+- ownership check
 - CSRF
-- session fixation
-- brute force
-- path traversal
-
-## UI
-
-- responsive
-- hover
-- touch
-- keyboard navigation
-- loading
-- empty state
-- error state
+- input validation
+- output escaping
+- IDOR himoyasi
+- brute-force/rate limiting
+- path traversal himoyasi
+- JSON corruption himoyasi
+- `LOCK_EX`
+- data directory HTTP access block
+- secure headers
+- max request size
+- audit kerak bo‘lgan amallarni qayd qilish
 
 ---
 
-# README ISH TARTIBI
+# DEVELOPMENT ORDER
 
-Har bir muhim milestone oxirida README boshidagi `CURRENT DEVELOPMENT STATUS` yangilanadi.
+## PHASE 0 — CLEAN FOUNDATION
 
-Har safar yoziladi:
+- [x] README arxitekturasi belgilandi.
+- [ ] Eski implementation kodlarini to‘liq tozalash.
+- [ ] Faqat belgilangan strukturani qoldirish.
+- [ ] JSON storage foundation.
+- [ ] PHP umumiy foundation.
+- [ ] `.htaccess` security foundation.
 
-1. Nima tugadi.
-2. Nima tekshirildi.
-3. Nima qolgan.
-4. Keyingi aniq task.
-5. Keyingi agent qayerdan boshlashi.
+## PHASE 1 — AUTH
 
-Chat/token limiti tugashidan oldin `NEXT EXECUTION ORDER` ichida aniq davom etish nuqtasi qoldiriladi.
+- [ ] Register
+- [ ] Login
+- [ ] Logout
+- [ ] Session
+- [ ] Profile
+- [ ] Authorization
+- [ ] Auth security test
+
+## PHASE 2 — SERVICES
+
+- [ ] `services.php`
+- [ ] `api/services.php`
+- [ ] `data/services.json`
+- [ ] Admin service management
+
+## PHASE 3 — ORDERS
+
+- [ ] Order create
+- [ ] Order list
+- [ ] Order detail
+- [ ] Order update
+- [ ] Status system
+- [ ] User ownership
+- [ ] Admin order management
+
+## PHASE 4 — CHAT
+
+- [ ] Chat list
+- [ ] Message list
+- [ ] Message send
+- [ ] Read status
+- [ ] Unread count
+- [ ] Polling
+- [ ] User ↔ Admin conversation
+
+## PHASE 5 — NOTIFICATIONS
+
+- [ ] New order notification
+- [ ] New message notification
+- [ ] Status notification
+- [ ] Read/unread
+
+## PHASE 6 — PROJECT / PORTFOLIO
+
+- [ ] Projects JSON
+- [ ] Portfolio page
+- [ ] Project detail
+- [ ] Admin project management
+
+## PHASE 7 — ADMIN
+
+- [ ] Admin authentication
+- [ ] Dashboard
+- [ ] Users
+- [ ] Orders
+- [ ] Chat
+- [ ] Projects
+- [ ] Services
+- [ ] Settings
+
+## PHASE 8 — SECURITY + TESTING
+
+- [ ] Full authorization audit
+- [ ] JSON concurrency test
+- [ ] API abuse test
+- [ ] CSRF test
+- [ ] IDOR test
+- [ ] Session test
+- [ ] Responsive test
+- [ ] Mobile test
+- [ ] Production audit
 
 ---
 
-# NEXT EXECUTION ORDER
+# CURRENT NEXT TASK
 
-## HOZIR
+**PHASE 0 — CLEAN FOUNDATION**
 
-**PHASE 1 → Register API**
+1. Eski implementation kodlarini to‘liq tozalash.
+2. Yuqoridagi strukturani aynan saqlash.
+3. Faqat kerakli PHP/JSON/Apache foundationni yaratish.
+4. Hech qanday qo‘shimcha sahifa yaratmaslik.
+5. Keyin PHASE 1 — Auth boshlash.
 
-Ketma-ketlik:
+**Keyingi agent aynan PHASE 0 dan davom etadi.**
 
-1. Register API
-2. Register validation/security
-3. JSON persistence test
-4. Login API
-5. Session security
-6. Logout API
-7. `me` API
-8. Profile API
-9. Auth security test
-10. README status update
-11. Commit
+---
 
-**Boshqa phase'ga o‘tilmasin.**
+# README QOIDASI
 
-**Tayyor kod qayta yozilmasin.**
+Har bir muhim milestone oxirida:
 
-Avval mavjud kod audit qilinsin, keyin faqat qolgan task implement qilinsin.
+1. `CURRENT DEVELOPMENT STATUS` yangilanadi.
+2. Bajarilgan ishlar yoziladi.
+3. Tekshirilgan ishlar yoziladi.
+4. Qolgan ishlar yoziladi.
+5. `CURRENT NEXT TASK` aniq belgilanadi.
+6. Keyingi agent qayerdan boshlashi yoziladi.
+7. Commit qilinadi.
 
-**Keyingi agentning aniq boshlash nuqtasi: `POST /api/v1/auth/register.php`.**
+**Tayyor ishlayotgan kod qayta yozilmaydi. Avval audit qilinadi.**
