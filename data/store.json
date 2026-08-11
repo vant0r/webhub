@@ -1,0 +1,35 @@
+{
+  "users": [],
+  "orders": [],
+  "messages": [],
+  "projects": [],
+  "services": [
+    {
+      "id": 1,
+      "title": "Web sayt",
+      "slug": "web-sayt",
+      "description": "Biznes uchun zamonaviy va tezkor web sayt.",
+      "is_active": true
+    },
+    {
+      "id": 2,
+      "title": "Web platforma",
+      "slug": "web-platforma",
+      "description": "Real foydalanuvchilar va ma'lumotlar bilan ishlaydigan platforma.",
+      "is_active": true
+    },
+    {
+      "id": 3,
+      "title": "Raqamli mahsulot",
+      "slug": "raqamli-mahsulot",
+      "description": "G‘oyadan ishga tushirishgacha bo‘lgan raqamli mahsulot.",
+      "is_active": true
+    }
+  ],
+  "notifications": [],
+  "settings": {
+    "app_name": "WebHub",
+    "version": "0.1.0",
+    "maintenance": false
+  }
+}
