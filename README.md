@@ -2,38 +2,30 @@
 
 # CURRENT DEVELOPMENT STATUS
 
-**Bosqich:** 0 — Toza arxitektura / rebuild boshlanishi
-
-**Branch:** `feature/json-api-foundation`
-
+**Bosqich:** 0 — Toza arxitektura / rebuild boshlanishi  
+**Branch:** `feature/json-api-foundation`  
 **PR:** #2
 
-## Qat’iy texnologik qoidalar
+## QAT’IY TEXNOLOGIK QOIDALAR
 
 - PHP 8.x
 - HTML5
 - CSS3
 - Vanilla JavaScript
 - JSON
-- Apache
-- `.htaccess`
-- MySQL/SQL yo‘q.
-- React, Vue, Angular, Node.js, TypeScript, Tailwind, Bootstrap, Laravel, Symfony, WordPress, jQuery va boshqa frameworklar yo‘q.
-- Dark mode, qora/dark background, cyberpunk/neon yo‘q.
+- Apache + `.htaccess`
+- MySQL/SQL MUTLAQO YO‘Q.
+- React, Vue, Angular, Node.js, TypeScript, Tailwind, Bootstrap, Laravel, Symfony, WordPress, jQuery va boshqa frameworklar MUTLAQO YO‘Q.
 - User-facing barcha matnlar o‘zbek lotin tilida.
 - Mock/fake data yo‘q.
 - Real JSON persistence va real PHP API ishlatiladi.
-- Keraksiz qo‘shimcha sahifalar yaratilmaydi.
-
-## MUHIM
-
-Oldingi implementation kodlari to‘liq tozalanadi/rebuild qilinadi.
-
-Quyidagi struktura **o‘zgarmas asosiy loyiha strukturasi** hisoblanadi. Yangi papka yoki sahifa faqat real zarurat bo‘lsa va README'dagi arxitekturaga mos ravishda qo‘shiladi.
+- Keraksiz sahifa yoki papka yaratilmaydi.
+- UI faqat yorqin premium Apple-inspired Light Mode.
+- Dark mode, qora/dark background, cyberpunk/neon MUTLAQO YO‘Q.
 
 ---
 
-# LOYIHA STRUKTURASI
+# LOYIHA STRUKTURASI — O‘ZGARMAS
 
 ```text
 webhub/
@@ -53,19 +45,15 @@ webhub/
 │
 ├── api/
 │   ├── index.php
-│   │
 │   ├── auth.php
 │   ├── profile.php
-│   │
 │   ├── orders.php
 │   ├── order.php
 │   ├── order-create.php
 │   ├── order-update.php
-│   │
 │   ├── chat.php
 │   ├── message.php
 │   ├── message-send.php
-│   │
 │   ├── projects.php
 │   ├── services.php
 │   └── notifications.php
@@ -93,377 +81,246 @@ webhub/
 └── .htaccess
 ```
 
-## Strukturani o‘zgartirmaslik qoidasi
-
-- `webhub/` root strukturasi shu ko‘rinishda qoladi.
-- `api/` APK va boshqa clientlar uchun PHP API qatlamidir.
-- `data/` faqat JSON persistence uchun ishlatiladi.
-- `admin*.php` admin boshqaruv qismidir.
-- `config.php`, `functions.php`, `auth.php` umumiy backend foundation hisoblanadi.
-- CSS va Vanilla JS alohida framework/build tizimiga chiqarilmaydi; kerakli sahifa ichida ishlatiladi.
-- SQL database, migration, ORM yoki database server qo‘shilmaydi.
+Bu struktura asosiy arxitektura hisoblanadi va o‘zboshimchalik bilan o‘zgartirilmaydi.
 
 ---
 
-# SAHIFALAR VAZIFASI
+# WEBHUB.UZ — iOS 18/19 INSPIRED GLASS DESIGN SYSTEM
 
-## Public
+WebHub.uz dizayni **iOS 18/19 uslubidagi premium Light Glass** konsepsiyasida quriladi. Maqsad — oddiy card emas, balki Apple uslubidagi shaffoflik, chuqurlik, yumshoq yorug‘lik va tabiiy interactionga ega interfeys yaratish.
 
-### `index.php`
+## 1. ORQA FON VA DEPTH EFFECT
 
-Asosiy landing/home sahifa.
+Hero hududida 3 ta loyqa, aylantirilgan vizual qatlam ishlatiladi:
 
-### `about.php`
+- **Rasm 1:** markazda, katta — `360x460`, `rotate(-6deg)`, opacity `0.45`
+- **Rasm 2:** yuqori o‘ngda — `180x220`, `rotate(12deg)`, opacity `0.30`
+- **Rasm 3:** pastki chapda — `160x200`, `rotate(-14deg)`, opacity `0.25`
+- Rasmlar blur qilinadi va turli qatlamlarda joylashtiriladi.
+- Hover paytida rasmlar juda yengil harakatlanib, depth/parallax effekt beradi.
+- Dekorativ rasm sahifa ishlashi uchun majburiy emas.
 
-WebHub haqida.
+### CSS 3D platforma / tosh
 
-### `services.php`
+WebHub hero konsepsiyasidagi tosh/platforma **alohida rasm sifatida majburiy emas**. Afzal yechim — HTML element + CSS:
 
-Mavjud xizmatlar.
+- `border-radius`
+- `linear-gradient`
+- `radial-gradient`
+- `box-shadow`
+- `transform: perspective(...) rotateX(...) rotateZ(...)`
+- ichki highlight
+- ichki shadow
+- yumshoq texture illusion
 
-### `portfolio.php`
-
-Bajarilgan loyihalar va portfolio.
-
-### `contact.php`
-
-WebHub bilan bog‘lanish.
-
-### `login.php`
-
-Foydalanuvchi login sahifasi.
-
-### `register.php`
-
-Yangi foydalanuvchi ro‘yxatdan o‘tishi.
-
-### `logout.php`
-
-Sessiyani xavfsiz yakunlash.
+Bu usul responsive, yengil va assetga bog‘liqlikni kamaytiradi.
 
 ---
 
-# UMUMIY BACKEND
+# 2. GLASS CARD
 
-### `config.php`
+Asosiy card:
 
-- loyiha konfiguratsiyasi
-- JSON storage yo‘llari
-- session konfiguratsiyasi
-- umumiy xavfsizlik sozlamalari
+```css
+backdrop-filter: blur(32px) saturate(180%);
+-webkit-backdrop-filter: blur(32px) saturate(180%);
+border-radius: 38px;
+background: rgba(255,255,255,0.55);
+border: 1px solid rgba(255,255,255,0.5);
+```
 
-### `functions.php`
+Hover:
 
-- JSON read/write
-- validation helperlar
-- response helperlar
-- ID/UUID generator
-- umumiy utility funksiyalar
+- background `rgba(255,255,255,0.75)` ga yaqinlashadi
+- `translateY(-4px)`
+- shadow kuchayadi
+- glass depth oshadi
+- ko‘k va binafsha glow dog‘lari kengayadi
 
-### `auth.php`
+Card ichida:
 
-- authentication
-- authorization
-- session tekshiruvi
-- user ownership tekshiruvi
-- admin authorization foundation
-
----
-
-# API
-
-`api/` alohida API framework emas. Oddiy PHP endpointlar to‘plami.
-
-## `api/index.php`
-
-API kirish/ma’lumot endpointi.
-
-## `api/auth.php`
-
-- register
-- login
-- logout
-- current user
-- authentication flow
-
-## `api/profile.php`
-
-- profilni olish
-- profilni yangilash
-
-## `api/orders.php`
-
-- buyurtmalar ro‘yxati
-- userga tegishli buyurtmalar
-
-## `api/order.php`
-
-- bitta buyurtma
-- buyurtma tafsilotlari
-
-## `api/order-create.php`
-
-- yangi buyurtma yaratish
-
-## `api/order-update.php`
-
-- buyurtma ma’lumotlari/statusini ruxsat asosida yangilash
-
-## `api/chat.php`
-
-- chat/conversation ma’lumotlari
-- chatni olish
-
-## `api/message.php`
-
-- bitta xabar
-- xabar tafsilotlari
-
-## `api/message-send.php`
-
-- yangi xabar yuborish
-
-## `api/projects.php`
-
-- loyiha ma’lumotlari
-- project/order bilan bog‘liq umumiy ma’lumotlar
-
-## `api/services.php`
-
-- xizmatlar ro‘yxati
-
-## `api/notifications.php`
-
-- foydalanuvchi notificationlari
-- o‘qilgan/o‘qilmagan holati
+- yuqori yorug‘lik chizig‘i
+- pastki yumshoq yorug‘lik chizig‘i
+- 2 ta glow: ko‘k + binafsha
+- glow yumshoq, neon emas
 
 ---
 
-# JSON DATA
-
-## `data/users.json`
-
-Foydalanuvchilar.
-
-Saqlanadi:
-
-- id
-- name
-- phone/email
-- password hash
-- status
-- created_at
-- updated_at
-- last_login_at
-
-Password hech qachon API response'da qaytarilmaydi.
-
-## `data/orders.json`
-
-Buyurtmalar.
-
-Saqlanadi:
-
-- id
-- user_id
-- service_id
-- title
-- description
-- budget
-- deadline
-- status
-- created_at
-- updated_at
-
-## `data/messages.json`
-
-Chat xabarlari.
-
-- id
-- order_id
-- sender_id
-- message
-- reply_to
-- read status
-- created_at
-- updated_at
-
-## `data/projects.json`
-
-WebHub loyihalari/portfolio bilan bog‘liq project ma’lumotlari.
-
-## `data/services.json`
-
-WebHub xizmatlari.
-
-## `data/notifications.json`
-
-Foydalanuvchi va tizim notificationlari.
-
-## `data/settings.json`
-
-Sayt va tizim sozlamalari.
-
----
-
-# ADMIN
-
-### `admin.php`
-
-Admin panelga kirish/router asosiy nuqtasi.
-
-### `admin-login.php`
-
-Admin authentication.
-
-### `admin-dashboard.php`
-
-Real JSON ma’lumotlar asosidagi dashboard.
-
-### `admin-orders.php`
-
-Buyurtmalarni boshqarish.
-
-### `admin-chat.php`
-
-Foydalanuvchilar bilan buyurtma chatlari.
-
-### `admin-projects.php`
-
-Loyihalarni boshqarish.
-
-### `admin-services.php`
-
-Xizmatlarni boshqarish.
-
-### `admin-users.php`
-
-Foydalanuvchilarni boshqarish.
-
-### `admin-settings.php`
-
-Tizim sozlamalari.
-
----
-
-# `install.php`
-
-Birinchi o‘rnatish uchun.
-
-Vazifalari:
-
-- kerakli JSON fayllarni yaratish
-- boshlang‘ich JSON strukturasini tayyorlash
-- kerakli kataloglarni yaratish
-- permissionlarni tekshirish
-- o‘rnatish holatini tekshirish
-
-SQL/database installation bo‘lmaydi.
-
----
-
-# `.htaccess`
-
-- JSON fayllarga to‘g‘ridan-to‘g‘ri HTTP accessni bloklash
-- `data/` himoyasi
-- xavfsizlik headerlari
-- PHP fayllarining noto‘g‘ri ishlatilishini cheklash
-- kerakli Apache routing/security qoidalari
-
----
-
-# UI/UX
-
-Faqat **premium Light Mode**.
-
-- oq
-- yorqin kulrang
-- Apple-inspired
-- glass
-- blur
-- minimal
-- katta typography
-- whitespace
-- yumshoq micro-animation
-
-## Invisible UI
+# 3. INVISIBLE UI
 
 Default holatda:
 
-- border deyarli ko‘rinmaydi
+- card border deyarli bilinmaydi
 - tugma ramkasi bilinmaydi
-- card ramkasi bilinmaydi
-- shadow minimal
+- shadow juda yengil
+- elementlar fonda tabiiy erishadi
 
 Cursor hover bo‘lganda:
 
-- glass effect
-- blur
-- nozik border
-- soft shadow
-- micro interaction
+- glass effekt aniqroq ko‘rinadi
+- nozik border paydo bo‘ladi
+- blur/depth kuchayadi
+- shadow kuchayadi
+- micro-interaction ishlaydi
 
-Mobile/touch qurilmalarda hover mavjud emasligi hisobga olinadi.
-
----
-
-# ASOSIY FUNKSIYALAR
-
-## User
-
-1. Ro‘yxatdan o‘tish.
-2. Login.
-3. Profil.
-4. Xizmatlarni ko‘rish.
-5. Buyurtma berish.
-6. Buyurtmalarini ko‘rish.
-7. Buyurtma statusini kuzatish.
-8. Buyurtma chatidan foydalanish.
-9. Notificationlarni ko‘rish.
-10. Logout.
-
-## Admin
-
-1. Login.
-2. Userlarni boshqarish.
-3. Buyurtmalarni ko‘rish.
-4. Buyurtma statusini boshqarish.
-5. Chatga javob berish.
-6. Loyihalarni boshqarish.
-7. Xizmatlarni boshqarish.
-8. Settingsni boshqarish.
+Touch qurilmalarda hoverga bog‘liq asosiy funksiya bo‘lmaydi.
 
 ---
 
-# BUYURTMA → CHAT OQIMI
+# 4. HERO KONTENTI
+
+### Badge
+
+`✦ Studio`
+
+Ko‘k accentli, yumaloq pill.
+
+### Icon
+
+`⚡` — taxminan `3rem`.
+
+### Sarlavha
+
+`WebHub.uz`
+
+`Hub` qismi ko‘k accent rangida.
+
+### Ost sarlavha
+
+`Raqamli mahsulotlar studiyasi`
+
+### Xizmatlar
+
+4 ta iOS-style xizmat elementi:
+
+1. Web saytlar
+2. Telegram botlar
+3. AI yechimlar
+4. Mobil ilovalar
+
+Har bir element:
+
+- icon
+- label
+- qiymat/narx
+- yumaloq container
+- nozik divider
+- hover interaction
+
+### Statistika
+
+- `50+` — Loyiha
+- `30+` — Mijoz
+- `100%` — Mamnuniyat
+
+### CTA
+
+`Loyiha boshlash →`
+
+Ko‘k, yumaloq va hoverda yengil lift effektiga ega.
+
+### Footer
+
+`24/7 support · hello@webhub.uz`
+
+---
+
+# 5. RANGLAR — iOS LIGHT
 
 ```text
-User
- ↓
-Xizmat tanlaydi
- ↓
-Buyurtma beradi
- ↓
-orders.json
- ↓
-Buyurtma yaratiladi
- ↓
-Admin notification
- ↓
-Buyurtmaga bog‘langan chat
- ↓
-User ↔ Admin
- ↓
-Status yangilanadi
- ↓
-Buyurtma yakunlanadi
+Background: #f2f2f7
+Primary text: #1d1d1f
+Secondary text: #6e6e73
+Muted text: #8e8e93
+Accent: #007aff
+```
+
+Qo‘shimcha ranglar faqat glass highlight va yumshoq ko‘k/binafsha glow uchun ishlatiladi.
+
+Soyalar juda yengil va xira bo‘ladi.
+
+**Dark mode ishlab chiqilmaydi.** README’dagi umumiy loyiha qoidasi bo‘yicha faqat Light Mode ishlatiladi.
+
+---
+
+# 6. RESPONSIVE
+
+### 600px gacha
+
+- padding kamayadi
+- card kichrayadi
+- rasmlar kichrayadi
+- typography moslashadi
+- hero markazlashadi
+
+### 420px gacha
+
+- 2- va 3-rasm yashiriladi yoki minimal darajaga tushiriladi
+- card yanada ixcham bo‘ladi
+- katta bo‘shliqlar kamayadi
+- CTA touch-friendly bo‘ladi
+
+### iOS Safari
+
+Majburiy:
+
+```css
+-webkit-backdrop-filter: blur(32px) saturate(180%);
+```
+
+Safe area:
+
+```css
+env(safe-area-inset-top)
+env(safe-area-inset-right)
+env(safe-area-inset-bottom)
+env(safe-area-inset-left)
 ```
 
 ---
 
-# APK
+# 7. PHP + JSON INTEGRATSIYA
 
-APK ushbu PHP API orqali ishlaydi.
+Dizayn statik mock bo‘lib qolmaydi.
+
+- `data/services.json` → xizmatlar
+- `data/projects.json` → portfolio
+- `data/users.json` → foydalanuvchilar
+- `data/orders.json` → buyurtmalar
+- `data/messages.json` → chat
+- `data/notifications.json` → bildirishnomalar
+
+PHP HTML'ni real JSON ma’lumotlari bilan render qiladi.
+
+Vanilla JS faqat kerakli UI interaction va API communication uchun ishlatiladi.
+
+---
+
+# 8. BACKEND VA API
+
+### Umumiy backend
+
+- `config.php` — konfiguratsiya va JSON yo‘llari
+- `functions.php` — JSON read/write, validation, response va utility funksiyalar
+- `auth.php` — authentication, authorization, session va ownership
+
+### API
+
+- `api/index.php`
+- `api/auth.php`
+- `api/profile.php`
+- `api/orders.php`
+- `api/order.php`
+- `api/order-create.php`
+- `api/order-update.php`
+- `api/chat.php`
+- `api/message.php`
+- `api/message-send.php`
+- `api/projects.php`
+- `api/services.php`
+- `api/notifications.php`
+
+APK shu PHP API orqali ishlaydi:
 
 ```text
 APK
@@ -473,13 +330,27 @@ PHP API
 JSON
 ```
 
-APK uchun alohida database yoki alohida backend yaratilmaydi.
-
-API real JSON ma’lumotlari bilan ishlaydi.
+SQL/MySQL ishlatilmaydi.
 
 ---
 
-# SECURITY TALABLARI
+# 9. ADMIN
+
+- `admin.php`
+- `admin-login.php`
+- `admin-dashboard.php`
+- `admin-orders.php`
+- `admin-chat.php`
+- `admin-projects.php`
+- `admin-services.php`
+- `admin-users.php`
+- `admin-settings.php`
+
+Admin barcha ma’lumotlarni real JSON storage orqali boshqaradi.
+
+---
+
+# 10. SECURITY
 
 - `password_hash()`
 - `password_verify()`
@@ -487,31 +358,35 @@ API real JSON ma’lumotlari bilan ishlaydi.
 - session regeneration
 - authorization
 - ownership check
-- CSRF
+- CSRF protection
 - input validation
 - output escaping
-- IDOR himoyasi
+- IDOR protection
 - brute-force/rate limiting
-- path traversal himoyasi
-- JSON corruption himoyasi
+- path traversal protection
+- JSON corruption/concurrency protection
 - `LOCK_EX`
-- data directory HTTP access block
-- secure headers
-- max request size
-- audit kerak bo‘lgan amallarni qayd qilish
+- `data/` HTTP access block
+- security headers
+- request size limits
+
+Password API response orqali hech qachon qaytarilmaydi.
 
 ---
 
-# DEVELOPMENT ORDER
+# 11. DEVELOPMENT ORDER
 
 ## PHASE 0 — CLEAN FOUNDATION
 
-- [x] README arxitekturasi belgilandi.
-- [ ] Eski implementation kodlarini to‘liq tozalash.
-- [ ] Faqat belgilangan strukturani qoldirish.
-- [ ] JSON storage foundation.
-- [ ] PHP umumiy foundation.
-- [ ] `.htaccess` security foundation.
+- [x] README arxitekturasi
+- [x] loyiha strukturasi
+- [x] dizayn konsepsiyasi
+- [ ] JSON storage foundation
+- [ ] PHP umumiy foundation
+- [ ] `.htaccess` security foundation
+- [ ] `index.php` iOS Glass hero
+- [ ] xizmatlarni JSON'dan dinamik chiqarish
+- [ ] CSS 3D platforma
 
 ## PHASE 1 — AUTH
 
@@ -585,6 +460,7 @@ API real JSON ma’lumotlari bilan ishlaydi.
 - [ ] Session test
 - [ ] Responsive test
 - [ ] Mobile test
+- [ ] iOS Safari test
 - [ ] Production audit
 
 ---
@@ -593,13 +469,17 @@ API real JSON ma’lumotlari bilan ishlaydi.
 
 **PHASE 0 — CLEAN FOUNDATION**
 
-1. Eski implementation kodlarini to‘liq tozalash.
-2. Yuqoridagi strukturani aynan saqlash.
-3. Faqat kerakli PHP/JSON/Apache foundationni yaratish.
-4. Hech qanday qo‘shimcha sahifa yaratmaslik.
-5. Keyin PHASE 1 — Auth boshlash.
+1. JSON storage foundationni yaratish.
+2. `config.php`, `functions.php`, `auth.php` foundationni yaratish.
+3. `.htaccess` orqali `data/*.json` fayllarini himoyalash.
+4. `index.php` uchun iOS 18/19 Light Glass hero dizaynini real PHP/HTML/CSS/Vanilla JS bilan implement qilish.
+5. Xizmatlarni `services.json` dan dinamik chiqarish.
+6. CSS orqali WebHub 3D platforma/tosh effektini yaratish.
+7. Real PHP serverda tekshirish.
+8. Responsive va iOS Safari holatini tekshirish.
+9. Keyin PHASE 1 — Auth boshlash.
 
-**Keyingi agent aynan PHASE 0 dan davom etadi.**
+**Keyingi agent aynan shu ro‘yxatdagi 1-banddan davom etadi.**
 
 ---
 
@@ -612,7 +492,7 @@ Har bir muhim milestone oxirida:
 3. Tekshirilgan ishlar yoziladi.
 4. Qolgan ishlar yoziladi.
 5. `CURRENT NEXT TASK` aniq belgilanadi.
-6. Keyingi agent qayerdan boshlashi yoziladi.
+6. Keyingi agent qayerdan boshlashi aniq yoziladi.
 7. Commit qilinadi.
 
 **Tayyor ishlayotgan kod qayta yozilmaydi. Avval audit qilinadi.**
